@@ -1,1 +1,1 @@
-export const URL = "http://localhost:3001/api/submit";
+export const URL = 'http://localhost:3001/arapp/navigation/:id';
