@@ -9,6 +9,37 @@ export default function SendDataToServer({ json }) {
     useEffect(() => {
         if (status !== 'pending') return;
 
+        // Fetch the session data from the server
+        fetch('http://localhost:3000/get-session-data')
+            .then((response) => response.json())
+            .then((data) => {
+                const arExperienceId = data.ar_experience_id;
+
+                fetch(URL + arExperienceId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(json),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert(`
+                        Thank you for submitting your data
+                        Your AR Experience ID: ${data.api_experience_id ?? '1234567890'}
+                        `);
+                        setStatus('idle');
+                    })
+                    .catch((error) => {
+                        alert(
+                            'An error occurred while sending the data to the server. Please try again later.'
+                        );
+                        console.error(error);
+                        setStatus('idle');
+                    });
+            })
+            .catch((error) => console.error('Error fetching session data:', error));
+
         fetch(URL, {
             method: 'POST',
             headers: {
